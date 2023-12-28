@@ -15,15 +15,14 @@ def get_data_from_mysql():
         host="localhost",
         user="root",
         password="",
-        database="faces"
+        database="ss"
     )
     cursor = connection.cursor()
 
     # Obtener la fecha actual en el formato "YYYY-MM-DD"
     current_date = get_current_date()
-
-    # Obtener los datos de la tabla "registro" para la fecha actual
-    query = f"SELECT id, fecha, nombre, hora FROM registro WHERE fecha = '{current_date}'"
+    # SELECT * FROM estudiante as E, asistencia as A, persona as P WHERE E.codest = A.codest && E.codper = P.codper && A.fecha = $
+    query = f"SELECT CONCAT(P.nombre1, ' ', P.nombre2, ' ', P.appat, ' ', P.apmat) as name, A.detalle, A.fecha, A.inicial, A.final FROM estudiante as E, asistencia as A, persona as P WHERE E.codest = A.codest && E.codper = P.codper && A.fecha = '{current_date}'"
     cursor.execute(query)
     data = cursor.fetchall()
 
@@ -47,7 +46,7 @@ def create_pdf(data):
     elements.append(title_paragraph)
 
     # Convertir los datos en una lista para la tabla
-    data_table = [['ID', 'Fecha', 'Nombre', 'Hora']] + data
+    data_table = [['Nombre', 'Detalle', 'Fecha', 'Inicio', 'Fin']] + data
 
     # Crear la tabla
     table = Table(data_table)
